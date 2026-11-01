@@ -1,29 +1,43 @@
-# Welcome to your Lovable project
+# Cheminformatics Virtual Laboratory
 
-This project was built with [Lovable](https://lovable.dev).
+An interactive, browser-based virtual lab for learning cheminformatics: write molecules as SMILES, see them in 2D and 3D, compute molecular descriptors, test your understanding and export a lab report.
 
-## Build with Lovable
+## Features
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+- **3D molecule viewer** – offline Three.js caffeine model on the home page, plus an interactive 2D/3D viewer (stick, ball-and-stick, space-filling, surface) for any SMILES.
+- **Descriptors report** – molecular weight, LogP, TPSA, H-bond donors/acceptors, rotatable bonds and Lipinski Rule of Five check.
+- **Quiz** – self-assessment questions with instant scoring.
+- **PDF report** – download a lab report for the selected molecule.
+- Theory pages, dark/light theme and a responsive layout.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## Tech stack
 
-## Development
+- React 19 + TypeScript
+- TanStack Start / TanStack Router, Vite
+- Tailwind CSS v4
+- Three.js, @react-three/fiber, @react-three/drei (home hero molecule)
+- RDKit.js and 3Dmol.js (loaded in the browser for chemistry and the visualization page)
+- PubChem public API for 3D conformers
+- jsPDF for report export
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Run locally
+
+Requires Node.js 20+.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
 
-## Built with
+Then open the URL shown in the terminal (usually http://localhost:8080).
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Build
+
+```sh
+npm run build
+npm run preview   # serve the production build locally
+```
+
+## Credits
+
+Developed by Ustelamuri Naga Jaswanth Reddy, B.Tech CSE (AI & ML), Section C, SRM Institute of Science and Technology, Tiruchirappalli
