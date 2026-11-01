@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Chemistry runs fully in the browser: RDKit.js and 3Dmol (pinned 2.0.4; 2.4.0 rendered blank in testing) load from CDN in `src/lib/chem.ts`; 3D coordinates come from PubChem with a 2D fallback. Why: no backend required.
+- The selected molecule is shared across lab pages via `src/lib/lab-store.ts`. Why: users carry one molecule from visualization to report.
