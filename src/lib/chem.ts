@@ -1,4 +1,4 @@
-// Browser-only chemistry helpers: RDKit.js from CDN, 3Dmol from npm, both loaded on demand.
+// Browser-only chemistry helpers: RDKit.js (served from public/rdkit) and 3Dmol (npm), both loaded on demand.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const EXAMPLES = [
@@ -14,7 +14,6 @@ export const EXAMPLES = [
   { name: "Toluene", smiles: "Cc1ccccc1", type: "Aromatic", pubchem: "toluene" },
 ];
 
-const RDKIT_VER = "2024.3.5-1.0.0";
 const scripts: Record<string, Promise<void>> = {};
 function loadScript(src: string) {
   if (!scripts[src]) {
@@ -33,7 +32,7 @@ function loadScript(src: string) {
 let rdkitP: Promise<any> | null = null;
 export function getRDKit(): Promise<any> {
   if (!rdkitP) {
-    const base = `https://unpkg.com/@rdkit/rdkit@${RDKIT_VER}/dist/`;
+    const base = "/rdkit/"; // copied from node_modules/@rdkit/rdkit/dist by `npm run copy-rdkit`
     rdkitP = loadScript(base + "RDKit_minimal.js").then(() =>
       (window as any).initRDKitModule({ locateFile: () => base + "RDKit_minimal.wasm" }),
     );

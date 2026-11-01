@@ -1,3 +1,10 @@
+import inter400 from "@fontsource/inter/400.css?url";
+import inter500 from "@fontsource/inter/500.css?url";
+import inter600 from "@fontsource/inter/600.css?url";
+import poppins500 from "@fontsource/poppins/500.css?url";
+import poppins600 from "@fontsource/poppins/600.css?url";
+import poppins700 from "@fontsource/poppins/700.css?url";
+import poppins800 from "@fontsource/poppins/800.css?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -48,6 +55,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+// Fonts are bundled from npm (@fontsource) so the app works offline.
+const FONT_CSS = [inter400, inter500, inter600, poppins500, poppins600, poppins700, poppins800];
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -62,9 +72,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" },
+      ...FONT_CSS.map((href) => ({ rel: "stylesheet", href })),
     ],
   }),
   shellComponent: RootShell,
