@@ -63,28 +63,31 @@ export function Structure2D({ svg, className = "" }: { svg: string; className?: 
 
 export type Style3D = "stick" | "ballstick" | "sphere";
 
-export function Viewer3D({ smiles, molblock, style = "ballstick", surface = false, spin = true, className = "" }:
-  { smiles: string; molblock: string; style?: Style3D; surface?: boolean; spin?: boolean; className?: string }) {
+export function Viewer3D({ smiles, molblock, style = "ballstick", surface = false, spin = true, className = "", svg, compact = false, interactive = true }:
+  { smiles: string; molblock: string; style?: Style3D; surface?: boolean; spin?: boolean; className?: string; svg?: string; compact?: boolean; interactive?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const viewer = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [note, setNote] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [flat, setFlat] = useState(false);
 
   useEffect(() => {
     let alive = true;
     setReady(false);
+    setFlat(false);
     (async () => {
       const [$3Dmol, s] = await Promise.all([get3Dmol(), get3DStructure(smiles, molblock)]);
       if (!alive || !ref.current) return;
+      if (!s.is3D && svg) { setFlat(true); setNote(compact ? null : "3D data couldn't be loaded from PubChem — showing the 2D structure instead."); return; }
       ref.current.innerHTML = "";
-      const v = $3Dmol.createViewer(ref.current, { backgroundColor: "white", backgroundAlpha: 0 });
+      const v = $3Dmol.createViewer(ref.current, { backgroundColor: "white", backgroundAlpha: 0, ...(interactive ? {} : { nomouse: true }) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       v.addModel(s.data, "sdf");
       viewer.current = v;
       setNote(s.is3D ? null : "Showing a flat 2D layout — a 3D conformer wasn't available for this molecule.");
       setReady(true);
     })().catch(() => alive && setNote("The 3D viewer couldn't load. Check your connection."));
     return () => { alive = false; };
-  }, [smiles, molblock]);
+  }, [smiles, molblock, svg]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const v = viewer.current;
@@ -102,8 +105,9 @@ export function Viewer3D({ smiles, molblock, style = "ballstick", surface = fals
 
   return (
     <div className={"relative overflow-hidden rounded-2xl " + className}>
-      {!ready && <div className="absolute inset-0 grid place-items-center"><Beaker className="size-8 animate-pulse text-primary" /></div>}
-      <div ref={ref} className="absolute inset-0" />
+      {!ready && !flat && <div className="absolute inset-0 animate-pulse bg-muted/50 grid place-items-center"><Beaker className={(compact ? "size-4" : "size-8") + " text-primary"} /></div>}
+      <div ref={ref} className={"absolute inset-0 " + (flat ? "hidden" : "")} />
+      {flat && svg && <Structure2D svg={svg} className="absolute inset-0" />}
       {note && <p className="absolute bottom-2 left-2 right-2 rounded-lg bg-popover/80 px-3 py-1.5 text-xs text-muted-foreground">{note}</p>}
     </div>
   );

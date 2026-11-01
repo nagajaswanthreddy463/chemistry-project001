@@ -1,17 +1,17 @@
-// Browser-only chemistry helpers: RDKit.js + 3Dmol loaded from CDN on demand.
+// Browser-only chemistry helpers: RDKit.js from CDN, 3Dmol from npm, both loaded on demand.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const EXAMPLES = [
-  { name: "Paracetamol", smiles: "CC(=O)Nc1ccc(O)cc1", type: "Drug" },
-  { name: "Ibuprofen", smiles: "CC(C)Cc1ccc(cc1)C(C)C(=O)O", type: "Drug" },
-  { name: "Nicotine", smiles: "CN1CCCC1c1cccnc1", type: "Natural alkaloid" },
-  { name: "Vanillin", smiles: "COc1cc(C=O)ccc1O", type: "Flavour compound" },
-  { name: "Naphthalene", smiles: "c1ccc2ccccc2c1", type: "Aromatic" },
-  { name: "Glucose", smiles: "OCC1OC(O)C(O)C(O)C1O", type: "Sugar" },
-  { name: "Dopamine", smiles: "NCCc1ccc(O)c(O)c1", type: "Neurotransmitter" },
-  { name: "Menthol", smiles: "CC(C)C1CCC(C)CC1O", type: "Natural terpene" },
-  { name: "Urea", smiles: "NC(N)=O", type: "Organic compound" },
-  { name: "Toluene", smiles: "Cc1ccccc1", type: "Aromatic" },
+  { name: "Paracetamol", smiles: "CC(=O)Nc1ccc(O)cc1", type: "Drug", pubchem: "acetaminophen" },
+  { name: "Ibuprofen", smiles: "CC(C)Cc1ccc(cc1)C(C)C(=O)O", type: "Drug", pubchem: "ibuprofen" },
+  { name: "Nicotine", smiles: "CN1CCCC1c1cccnc1", type: "Natural alkaloid", pubchem: "nicotine" },
+  { name: "Vanillin", smiles: "COc1cc(C=O)ccc1O", type: "Flavour compound", pubchem: "vanillin" },
+  { name: "Naphthalene", smiles: "c1ccc2ccccc2c1", type: "Aromatic", pubchem: "naphthalene" },
+  { name: "Glucose", smiles: "OCC1OC(O)C(O)C(O)C1O", type: "Sugar", pubchem: "glucose" },
+  { name: "Dopamine", smiles: "NCCc1ccc(O)c(O)c1", type: "Neurotransmitter", pubchem: "dopamine" },
+  { name: "Menthol", smiles: "CC(C)C1CCC(C)CC1O", type: "Natural terpene", pubchem: "menthol" },
+  { name: "Urea", smiles: "NC(N)=O", type: "Organic compound", pubchem: "urea" },
+  { name: "Toluene", smiles: "Cc1ccccc1", type: "Aromatic", pubchem: "toluene" },
 ];
 
 const RDKIT_VER = "2024.3.5-1.0.0";
@@ -43,8 +43,12 @@ export function getRDKit(): Promise<any> {
 }
 
 export async function get3Dmol(): Promise<any> {
-  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js");
-  return (window as any).$3Dmol;
+  const w = window as any;
+  if (!w.$3Dmol) {
+    const mod: any = await import("3dmol");
+    w.$3Dmol = mod.createViewer ? mod : mod.default ?? mod;
+  }
+  return w.$3Dmol;
 }
 
 export type Composition = { el: string; count: number; pct: number };
@@ -222,7 +226,37 @@ export async function analyze(smiles: string, svgSize = 360): Promise<Descriptor
 }
 
 /** 3D coordinates: try PubChem's 3D conformer, fall back to the 2D molblock. */
+export function exampleFor(smiles: string) {
+  return EXAMPLES.find((e) => e.smiles === smiles);
+}
+
+const pc3d: Record<string, Promise<string | null>> = {};
+/** 3D SDF for one of the examples, fetched by name from PubChem and cached in localStorage. */
+export function getExample3D(name: string): Promise<string | null> {
+  if (!pc3d[name]) {
+    pc3d[name] = (async () => {
+      const key = "pc3d:" + name;
+      try { const c = localStorage.getItem(key); if (c) return c; } catch { /* storage blocked */ }
+      try {
+        const r = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/SDF?record_type=3d`);
+        if (!r.ok) return null;
+        const t = await r.text();
+        if (!t.includes("V2000") && !t.includes("V3000")) return null;
+        try { localStorage.setItem(key, t); } catch { /* quota */ }
+        return t;
+      } catch { return null; }
+    })();
+    pc3d[name].then((v) => { if (!v) delete pc3d[name]; });
+  }
+  return pc3d[name];
+}
+
 export async function get3DStructure(smiles: string, fallback: string): Promise<{ data: string; is3D: boolean }> {
+  const ex = exampleFor(smiles);
+  if (ex) {
+    const sdf = await getExample3D(ex.pubchem);
+    return sdf ? { data: sdf, is3D: true } : { data: fallback, is3D: false };
+  }
   try {
     const r = await fetch(
       `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/${encodeURIComponent(smiles)}/SDF?record_type=3d`,
