@@ -39,6 +39,8 @@
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
 }
 
 /* Light theme */
@@ -71,6 +73,8 @@
   --chart-1: oklch(0.55 0.17 250);
   --chart-2: oklch(0.68 0.13 88);
   --chart-3: oklch(0.62 0.16 170);
+  --chart-4: oklch(0.6 0.15 20);
+  --chart-5: oklch(0.65 0.12 300);
   --bg-mesh: radial-gradient(60rem 40rem at 10% -10%, oklch(0.55 0.17 250 / 18%), transparent),
     radial-gradient(50rem 30rem at 100% 10%, oklch(0.75 0.13 88 / 18%), transparent);
 }
@@ -103,6 +107,8 @@
   --chart-1: oklch(0.72 0.16 240);
   --chart-2: oklch(0.78 0.13 88);
   --chart-3: oklch(0.75 0.15 170);
+  --chart-4: oklch(0.7 0.16 20);
+  --chart-5: oklch(0.72 0.13 300);
   --bg-mesh: radial-gradient(60rem 40rem at 10% -10%, oklch(0.45 0.14 262 / 55%), transparent),
     radial-gradient(50rem 30rem at 100% 10%, oklch(0.6 0.12 88 / 22%), transparent),
     radial-gradient(40rem 30rem at 50% 110%, oklch(0.5 0.16 240 / 30%), transparent);
