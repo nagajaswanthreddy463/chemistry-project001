@@ -66,7 +66,7 @@ const ICONS: Record<string, LucideIcon> = {
   "ESOL logS": Waves, "Solubility Class": Waves, "Heteroatom Count": Atom,
 };
 
-const SECTIONS = metricSections.length ? ["Basic", "Structure & Bonds", "Electronic & Charge", "Drug-likeness", "Solubility & Composition"] : [];
+const SECTIONS = ["Basic", "Structure & Bonds", "Electronic & Charge", "Drug-likeness", "Solubility & Composition"];
 const PIE_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--gold)"];
 
 function MetricCard({ k, v, u, t, delay }: { k: string; v: string; u: string; t: string; delay: number }) {
