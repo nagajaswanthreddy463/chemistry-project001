@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis } from "@/components/lab/Molecule";
-import { EXAMPLES, metricList, type Descriptors } from "@/lib/chem";
+import { EXAMPLES, metricSections, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
 const logo = { url: "/srm-logo.jpeg" };
 
@@ -32,6 +32,8 @@ async function toPng(src: string, w: number, h: number) {
   return c.toDataURL("image/png");
 }
 
+const clean = (s: string) => s.replace(/[≤]/g, "<=").replace(/[≥]/g, ">=").replace(/[σ]/g, "sigma").replace(/[π]/g, "pi").replace(/[—–]/g, "-").replace(/[³]/g, "3").replace(/[Å]/g, "A").replace(/[²]/g, "2");
+
 async function buildPdf(d: Descriptors, student: string, reg: string) {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -53,24 +55,62 @@ async function buildPdf(d: Descriptors, student: string, reg: string) {
   doc.addImage(await toPng(svgUrl, 600, 600), "PNG", 140, 40, 56, 56);
 
   let y = 100;
+  const footer = () => {
+    doc.setTextColor(110, 120, 140); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
+    doc.text("Developed by Ustelamuri Naga Jaswanth Reddy, CSE (AI & ML), Section C, SRM Institute of Science and Technology, Trichy", W / 2, 287, { align: "center" });
+  };
+  const ensureSpace = (need: number) => {
+    if (y + need > 272) { footer(); doc.addPage(); y = 20; doc.setTextColor(20, 30, 60); }
+  };
+
   doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.text("Molecular Descriptors & Interpretation", 14, y); y += 6;
   doc.setFontSize(9.5);
-  metricList(d).forEach((m, i) => {
-    if (i % 2 === 0) { doc.setFillColor(238, 242, 250); doc.rect(14, y - 4, W - 28, 12, "F"); }
-    doc.setFont("helvetica", "bold"); doc.text(m.k, 16, y + 1);
-    doc.text(`${m.v} ${m.u === "Å²" ? "A^2" : m.u}`, 62, y + 1);
-    doc.setFont("helvetica", "normal"); doc.text(m.t.replace(/[≤]/g, "<=").replace(/[σ]/g, "sigma").replace(/[π]/g, "pi").replace(/[—–]/g, "-"), 92, y + 1, { maxWidth: 102 });
-    y += 12;
-  });
-  y += 4;
-  const pass = d.lipinskiViolations <= 1;
-  pass ? doc.setFillColor(34, 150, 90) : doc.setFillColor(200, 60, 50);
-  doc.roundedRect(14, y, W - 28, 12, 3, 3, "F");
-  doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold");
-  doc.text(`Lipinski Rule of Five: ${pass ? "PASS" : "FAIL"} (${d.lipinskiViolations} violation${d.lipinskiViolations === 1 ? "" : "s"})`, 18, y + 7.5);
+  for (const sec of metricSections(d)) {
+    ensureSpace(16);
+    y += 2;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(20, 66, 143);
+    doc.text(sec.section, 14, y); y += 5;
+    doc.setFontSize(9.5); doc.setTextColor(20, 30, 60);
+    sec.items.forEach((m, i) => {
+      ensureSpace(12);
+      if (i % 2 === 0) { doc.setFillColor(238, 242, 250); doc.rect(14, y - 4, W - 28, 12, "F"); }
+      doc.setFont("helvetica", "bold"); doc.text(clean(m.k), 16, y + 1);
+      doc.text(clean(`${m.v} ${m.u}`.trim()), 62, y + 1);
+      doc.setFont("helvetica", "normal"); doc.text(clean(m.t), 92, y + 1, { maxWidth: 102 });
+      y += 12;
+    });
+  }
 
-  doc.setTextColor(110, 120, 140); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-  doc.text("Developed by Ustelamuri Naga Jaswanth Reddy, CSE (AI & ML), Section C, SRM Institute of Science and Technology, Trichy", W / 2, 287, { align: "center" });
+  ensureSpace(46);
+  y += 4;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(20, 66, 143);
+  doc.text("Elemental Composition (% by mass)", 14, y); y += 5;
+  doc.setFontSize(9.5); doc.setTextColor(20, 30, 60);
+  d.composition.forEach((c, i) => {
+    if (i % 2 === 0) { doc.setFillColor(238, 242, 250); doc.rect(14, y - 3.5, W - 28, 9, "F"); }
+    doc.setFont("helvetica", "bold"); doc.text(c.el, 16, y + 1);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${c.count} atom${c.count === 1 ? "" : "s"}`, 40, y + 1);
+    doc.text(`${c.pct.toFixed(1)}%`, 70, y + 1);
+    y += 9;
+  });
+
+  ensureSpace(30);
+  y += 4;
+  const badges: [string, boolean][] = [
+    [`Lipinski Rule of Five: ${d.lipinskiViolations <= 1 ? "PASS" : "FAIL"} (${d.lipinskiViolations} violation${d.lipinskiViolations === 1 ? "" : "s"})`, d.lipinskiViolations <= 1],
+    [`Veber Rule: ${d.veberPass ? "PASS" : "FAIL"} (TPSA <= 140 A^2 and <= 10 rotatable bonds)`, d.veberPass],
+    [`ESOL estimated solubility: logS ${d.esol.toFixed(2)} - ${d.esolLabel}`, d.esol > -4],
+  ];
+  for (const [text, ok] of badges) {
+    ok ? doc.setFillColor(34, 150, 90) : doc.setFillColor(200, 60, 50);
+    doc.roundedRect(14, y, W - 28, 12, 3, 3, "F");
+    doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold");
+    doc.text(text, 18, y + 7.5);
+    y += 16;
+  }
+
+  footer();
   doc.save(`Cheminformatics_Report_${(reg || "student").replace(/\W+/g, "_")}.pdf`);
 }
 
@@ -117,9 +157,16 @@ function Report() {
             {loading && !data ? <Skeleton className="mt-4 h-72" /> : data && (
               <div className="mt-4 grid gap-4 sm:grid-cols-[160px_1fr]">
                 <Structure2D svg={data.svg} className="aspect-square" />
-                <ul className="space-y-1.5 text-sm">
+                <ul className="max-h-[28rem] space-y-1.5 overflow-y-auto pr-2 text-sm">
                   <li className="font-mono text-gold">{data.formula}</li>
-                  {metricList(data).map((m) => <li key={m.k} className="flex justify-between border-b border-border/50 pb-1"><span className="text-muted-foreground">{m.k}</span><span>{m.v} {m.u}</span></li>)}
+                  {metricSections(data).flatMap((s) => [
+                    <li key={s.section} className="pt-2 text-xs font-semibold uppercase tracking-widest text-gold">{s.section}</li>,
+                    ...s.items.map((m) => (
+                      <li key={m.k} className="flex justify-between gap-2 border-b border-border/50 pb-1">
+                        <span className="text-muted-foreground">{m.k}</span><span className="text-right">{m.v} {m.u}</span>
+                      </li>
+                    )),
+                  ])}
                 </ul>
               </div>
             )}

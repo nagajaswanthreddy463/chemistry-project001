@@ -1,18 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle2, XCircle } from "lucide-react";
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer } from "recharts";
+import { useState } from "react";
+import {
+  Atom, Boxes, CheckCircle2, Circle, CircleDashed, Droplet, Droplets, Equal, FlaskConical, Gem,
+  Hexagon, Link2, Magnet, Minus, Orbit, Pentagon, Percent, Pill, RotateCw, Ruler, Scale, Scan,
+  ShieldCheck, Sigma, Split, Waves, Weight, XCircle, Zap, type LucideIcon,
+} from "lucide-react";
+import { Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader, Reveal } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis } from "@/components/lab/Molecule";
-import { metricList, type Descriptors } from "@/lib/chem";
+import { metricSections, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
 
 export const Route = createFileRoute("/properties")({
   head: () => ({
     meta: [
       { title: "Molecular Properties Report — Cheminformatics Virtual Laboratory" },
-      { name: "description", content: "MW, LogP, TPSA, H-bonding, rotatable bonds, rings and σ/π bonds with Lipinski Rule-of-Five check." },
+      { name: "description", content: "MW, LogP, TPSA, H-bonding, charge, solubility, elemental composition and drug-likeness checks for any molecule." },
       { property: "og:title", content: "Molecular Properties Report" },
-      { property: "og:description", content: "Descriptor cards, radar chart and a Lipinski pass/fail badge for any molecule." },
+      { property: "og:description", content: "Descriptor cards, charts and Lipinski/Veber/ESOL verdicts for any molecule." },
     ],
   }),
   component: Properties,
@@ -39,9 +44,93 @@ export function LipinskiBadge({ violations }: { violations: number }) {
   );
 }
 
+export function VeberBadge({ pass }: { pass: boolean }) {
+  return (
+    <span className={"inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ring-1 " +
+      (pass ? "bg-success/15 text-success ring-success/40" : "bg-destructive/15 text-destructive ring-destructive/40")}>
+      {pass ? <CheckCircle2 className="size-4" /> : <XCircle className="size-4" />}
+      Veber Rule: {pass ? "PASS" : "FAIL"}
+    </span>
+  );
+}
+
+const ICONS: Record<string, LucideIcon> = {
+  "Molecular Formula": FlaskConical, "Molecular Weight": Weight, "Exact Molecular Weight": Scale,
+  "Number of Atoms": Atom, "Heavy Atoms": Boxes,
+  "Ring Count": Circle, "Aromatic Rings": Hexagon, "Aliphatic Rings": CircleDashed, "Heterocycles": Pentagon,
+  "Heavy Atom Bonds": Link2, "Sigma Bonds": Minus, "Pi Bonds": Equal, "Total Bonds": Sigma,
+  "Rotatable Bonds": RotateCw, "Fraction Csp3": Percent, "Stereocenters": Split,
+  "Net Formal Charge": Zap, "Valence Electrons": Orbit, "H-bond Donors": Droplet, "H-bond Acceptors": Magnet,
+  "LogP": Droplets, "TPSA": Scan, "Molar Refractivity": Gem, "Labute ASA": Ruler,
+  "Lipinski Violations": ShieldCheck, "Veber Rule": Pill,
+  "ESOL logS": Waves, "Solubility Class": Waves, "Heteroatom Count": Atom,
+};
+
+const SECTIONS = metricSections.length ? ["Basic", "Structure & Bonds", "Electronic & Charge", "Drug-likeness", "Solubility & Composition"] : [];
+const PIE_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--gold)"];
+
+function MetricCard({ k, v, u, t, delay }: { k: string; v: string; u: string; t: string; delay: number }) {
+  const Icon = ICONS[k] ?? FlaskConical;
+  return (
+    <Reveal delay={delay}>
+      <div className="glass lift h-full rounded-2xl p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">{k}</p>
+          <Icon className="size-4 text-gold" />
+        </div>
+        <p className="mt-2 font-display text-3xl font-bold text-gradient">{v}<span className="ml-1 text-sm text-muted-foreground">{u}</span></p>
+        <p className="mt-2 text-sm text-muted-foreground">{t}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+function CompositionChart({ d }: { d: Descriptors }) {
+  return (
+    <div className="glass rounded-3xl p-5">
+      <h2 className="font-semibold">Elemental composition (% by mass)</h2>
+      <div className="grid items-center gap-6 md:grid-cols-2">
+        <div className="h-64">
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie data={d.composition} dataKey="pct" nameKey="el" innerRadius="55%" outerRadius="85%" strokeWidth={2} stroke="var(--background)">
+                {d.composition.map((c, i) => <Cell key={c.el} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+              </Pie>
+              <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 }}
+                formatter={(v) => `${Number(v).toFixed(1)}%`} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-xs uppercase tracking-widest text-muted-foreground">
+              <th className="py-2">Element</th><th>Atoms</th><th className="text-right">Mass %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {d.composition.map((c, i) => (
+              <tr key={c.el} className="border-b border-border/50">
+                <td className="flex items-center gap-2 py-2">
+                  <span className="inline-block size-3 rounded-sm" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />{c.el}
+                </td>
+                <td>{c.count}</td>
+                <td className="text-right font-semibold">{c.pct.toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function Properties() {
   const smiles = useSmiles();
   const { data, error, loading } = useAnalysis(smiles);
+  const [tab, setTab] = useState(SECTIONS[0]);
+  const sections = data ? metricSections(data) : [];
+  const active = sections.find((s) => s.section === tab);
+
   return (
     <>
       <PageHeader eyebrow="Module 03" title="Molecular properties report">Every descriptor, explained in plain English.</PageHeader>
@@ -53,20 +142,38 @@ function Properties() {
           <>
             <div className="glass flex flex-wrap items-center gap-4 rounded-3xl p-5">
               <Structure2D svg={data.svg} className="size-28" />
-              <div className="mr-auto"><p className="font-mono text-sm text-muted-foreground">{data.smiles}</p><p className="font-display text-2xl font-bold text-gold">{data.formula}</p></div>
-              <LipinskiBadge violations={data.lipinskiViolations} />
+              <div className="mr-auto">
+                <p className="font-mono text-sm text-muted-foreground">{data.smiles}</p>
+                <p className="font-display text-2xl font-bold text-gold">{data.formula}</p>
+                <p className="text-sm text-muted-foreground">Drug-likeness summary</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <LipinskiBadge violations={data.lipinskiViolations} />
+                <VeberBadge pass={data.veberPass} />
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-4 py-2 text-sm font-semibold text-primary ring-1 ring-primary/40">
+                  <Waves className="size-4" /> {data.esolLabel} (logS {data.esol.toFixed(2)})
+                </span>
+              </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {metricList(data).map((m, i) => (
-                <Reveal key={m.k} delay={i * 60}>
-                  <div className="glass lift h-full rounded-2xl p-5">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground">{m.k}</p>
-                    <p className="mt-2 font-display text-3xl font-bold text-gradient">{m.v}<span className="ml-1 text-sm text-muted-foreground">{m.u}</span></p>
-                    <p className="mt-2 text-sm text-muted-foreground">{m.t}</p>
-                  </div>
-                </Reveal>
+
+            <div className="flex flex-wrap gap-2">
+              {SECTIONS.map((s) => (
+                <button key={s} onClick={() => setTab(s)}
+                  className={"rounded-full px-4 py-1.5 text-sm ring-1 transition " +
+                    (tab === s ? "bg-primary text-primary-foreground ring-primary" : "ring-border hover:ring-gold")}>
+                  {s}
+                </button>
               ))}
             </div>
+
+            {active && (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {active.items.map((m, i) => <MetricCard key={m.k} {...m} delay={i * 60} />)}
+              </div>
+            )}
+
+            {tab === "Solubility & Composition" && <CompositionChart d={data} />}
+
             <div className="glass rounded-3xl p-5">
               <h2 className="font-semibold">Drug-likeness profile</h2>
               <p className="text-xs text-muted-foreground">Each axis shows % of the Lipinski/Veber limit — 100% marks the limit.</p>
