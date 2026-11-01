@@ -151,3 +151,17 @@ export const interpret = {
   rings: (v: number) => v === 0 ? "Acyclic (open chain) molecule." : `${v} ring(s) in the scaffold.`,
   bonds: (s: number, p: number) => `${s} σ bonds form the skeleton; ${p} π bond(s) indicate unsaturation.`,
 };
+
+export function metricList(d: Descriptors) {
+  return [
+    { k: "Molecular Weight", v: d.mw.toFixed(2), u: "g/mol", t: interpret.mw(d.mw) },
+    { k: "LogP", v: d.logp.toFixed(2), u: "", t: interpret.logp(d.logp) },
+    { k: "TPSA", v: d.tpsa.toFixed(1), u: "Å²", t: interpret.tpsa(d.tpsa) },
+    { k: "H-bond Donors", v: String(d.hbd), u: "", t: interpret.hbd(d.hbd) },
+    { k: "H-bond Acceptors", v: String(d.hba), u: "", t: interpret.hba(d.hba) },
+    { k: "Rotatable Bonds", v: String(d.rotb), u: "", t: interpret.rotb(d.rotb) },
+    { k: "Ring Count", v: String(d.rings), u: "", t: interpret.rings(d.rings) },
+    { k: "σ / π Bonds", v: `${d.sigma} / ${d.pi}`, u: "", t: interpret.bonds(d.sigma, d.pi) },
+  ];
+}
+

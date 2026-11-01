@@ -3,7 +3,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer } from "recharts";
 import { PageHeader, Reveal } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis } from "@/components/lab/Molecule";
-import { interpret, type Descriptors } from "@/lib/chem";
+import { metricList, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
 
 export const Route = createFileRoute("/properties")({
@@ -17,19 +17,6 @@ export const Route = createFileRoute("/properties")({
   }),
   component: Properties,
 });
-
-export function metricList(d: Descriptors) {
-  return [
-    { k: "Molecular Weight", v: d.mw.toFixed(2), u: "g/mol", t: interpret.mw(d.mw) },
-    { k: "LogP", v: d.logp.toFixed(2), u: "", t: interpret.logp(d.logp) },
-    { k: "TPSA", v: d.tpsa.toFixed(1), u: "Å²", t: interpret.tpsa(d.tpsa) },
-    { k: "H-bond Donors", v: String(d.hbd), u: "", t: interpret.hbd(d.hbd) },
-    { k: "H-bond Acceptors", v: String(d.hba), u: "", t: interpret.hba(d.hba) },
-    { k: "Rotatable Bonds", v: String(d.rotb), u: "", t: interpret.rotb(d.rotb) },
-    { k: "Ring Count", v: String(d.rings), u: "", t: interpret.rings(d.rings) },
-    { k: "σ / π Bonds", v: `${d.sigma} / ${d.pi}`, u: "", t: interpret.bonds(d.sigma, d.pi) },
-  ];
-}
 
 export function radarData(d: Descriptors) {
   // normalised against Lipinski-style limits (100 = at the limit)
