@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader, Reveal } from "@/components/lab/Layout";
-import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis } from "@/components/lab/Molecule";
+import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis, Viewer3D } from "@/components/lab/Molecule";
 import { metricSections, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
 
@@ -130,6 +130,7 @@ function Properties() {
   const [tab, setTab] = useState(SECTIONS[0]);
   const sections = data ? metricSections(data) : [];
   const active = sections.find((s) => s.section === tab);
+  const example = data ? exampleFor(data.smiles) : undefined;
 
   return (
     <>
@@ -166,11 +167,25 @@ function Properties() {
               ))}
             </div>
 
-            {active && (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {active.items.map((m, i) => <MetricCard key={m.k} {...m} delay={i * 60} />)}
-              </div>
-            )}
+            <div className={"grid gap-4 " + (example ? "lg:grid-cols-[1fr_320px]" : "")}>
+              {active && (
+                <div className={"grid content-start gap-4 sm:grid-cols-2 " + (example ? "xl:grid-cols-3" : "lg:grid-cols-4")}>
+                  {active.items.map((m, i) => <MetricCard key={m.k} {...m} delay={i * 60} />)}
+                </div>
+              )}
+              {example && (
+                <div className="glass h-fit rounded-3xl p-4 lg:sticky lg:top-24">
+                  <h2 className="font-semibold">{example.name} in 3D</h2>
+                  <Viewer3D smiles={data.smiles} molblock={data.molblock} svg={data.svg} className="mt-3 aspect-square bg-background/30" />
+                  <ul className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                    {[["Carbon", "#909090"], ["Oxygen", "#FF0D0D"], ["Nitrogen", "#3050F8"], ["Hydrogen", "#FFFFFF"]].map(([n, c]) => (
+                      <li key={n} className="flex items-center gap-2"><span className="size-3 rounded-full ring-1 ring-border" style={{ background: c }} />{n}</li>
+                    ))}
+                  </ul>
+                  <p className="mt-2 text-xs text-muted-foreground">Drag to rotate · scroll to zoom</p>
+                </div>
+              )}
+            </div>
 
             {tab === "Solubility & Composition" && <CompositionChart d={data} />}
 

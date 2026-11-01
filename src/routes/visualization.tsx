@@ -3,8 +3,9 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis, Viewer3D, type Style3D } from "@/components/lab/Molecule";
+import { exampleFor } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
-import { EXAMPLES } from "@/lib/chem";
+import { ExampleTable } from "@/components/lab/ExampleTable";
 
 export const Route = createFileRoute("/visualization")({
   head: () => ({
@@ -51,32 +52,11 @@ function Visualization() {
               <button onClick={() => setSpin(!spin)} className={"rounded-full px-3 py-1.5 text-xs ring-1 " + (spin ? "ring-gold text-gold" : "ring-border")}>Spin</button>
             </div>
             {loading && !data ? <Skeleton className="mt-4 aspect-[4/3]" /> : data &&
-              <Viewer3D smiles={data.smiles} molblock={data.molblock} style={style} surface={surface} spin={spin} className="mt-4 aspect-[4/3] bg-background/30" />}
+              <Viewer3D smiles={data.smiles} molblock={data.molblock} svg={exampleFor(data.smiles) ? data.svg : undefined} style={style} surface={surface} spin={spin} className="mt-4 aspect-[4/3] bg-background/30" />}
             <p className="mt-3 text-xs text-muted-foreground">Drag to rotate · scroll to zoom</p>
           </div>
         </div>
-        <div className="glass overflow-hidden rounded-3xl">
-          <h2 className="px-5 pt-5 font-semibold">Example molecules</h2>
-          <p className="px-5 text-xs text-muted-foreground">Click a row to load it.</p>
-          <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="text-xs uppercase tracking-widest text-muted-foreground">
-                <tr><th className="px-5 py-2">Molecule</th><th className="px-5 py-2">SMILES</th><th className="px-5 py-2">Type</th></tr>
-              </thead>
-              <tbody>
-                {EXAMPLES.map((e) => (
-                  <tr key={e.name} tabIndex={0} onClick={() => { setSmiles(e.smiles); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    onKeyDown={(k) => k.key === "Enter" && setSmiles(e.smiles)}
-                    className={"cursor-pointer border-t border-border transition hover:bg-primary/10 " + (e.smiles === smiles ? "bg-primary/15" : "")}>
-                    <td className="px-5 py-2.5 font-medium">{e.name}</td>
-                    <td className="px-5 py-2.5 font-mono text-xs text-gold">{e.smiles}</td>
-                    <td className="px-5 py-2.5 text-muted-foreground">{e.type}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <ExampleTable current={smiles} />
         <Link to="/properties" className="inline-flex items-center gap-2 text-sm text-primary hover:text-gold">See the properties report <ArrowRight className="size-4" /></Link>
       </div>
     </>
