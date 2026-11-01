@@ -116,7 +116,7 @@ function molblockInfo(mb: string) {
   for (const l of lines) {
     if (l.startsWith("M  CHG")) {
       const n = parseInt(l.slice(6, 9)) || 0;
-      for (let i = 0; i < n; i++) charge += parseInt(l.slice(14 + i * 8, 18 + i * 8)) || 0;
+      for (let i = 0; i < n; i++) charge += parseInt(l.slice(13 + i * 8, 17 + i * 8)) || 0;
     }
   }
   return { counts: c, nAtoms, nBonds, charge };
