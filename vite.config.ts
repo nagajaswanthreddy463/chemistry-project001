@@ -12,4 +12,6 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // 3Dmol and Three.js are large by nature; they are lazy-loaded, so silence the size warning.
+  vite: { build: { chunkSizeWarningLimit: 2000 } },
 });
