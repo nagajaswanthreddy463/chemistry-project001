@@ -69,7 +69,7 @@ function Properties() {
             </div>
             <div className="glass rounded-3xl p-5">
               <h2 className="font-semibold">Drug-likeness profile</h2>
-              <p className="text-xs text-muted-foreground">Each axis shows % of the Lipinski/Veber limit — inside the gold ring is drug-like.</p>
+              <p className="text-xs text-muted-foreground">Each axis shows % of the Lipinski/Veber limit — 100% marks the limit.</p>
               <div className="h-80">
                 <ResponsiveContainer>
                   <RadarChart data={radarData(data)}>

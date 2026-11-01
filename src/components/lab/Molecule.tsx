@@ -58,7 +58,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 }
 
 export function Structure2D({ svg, className = "" }: { svg: string; className?: string }) {
-  return <div className={"rounded-2xl bg-popover p-3 [&_svg]:h-full [&_svg]:w-full " + className} dangerouslySetInnerHTML={{ __html: svg }} />;
+  return <div className={"rounded-2xl bg-structure p-3 [&_svg]:h-full [&_svg]:w-full " + className} dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
 export type Style3D = "stick" | "ballstick" | "sphere";
