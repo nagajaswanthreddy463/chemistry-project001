@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalysisRouteImport } from './routes/analysis'
+import { Route as AssessmentRouteImport } from './routes/assessment'
+import { Route as PropertiesRouteImport } from './routes/properties'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as TheoryRouteImport } from './routes/theory'
+import { Route as VisualizationRouteImport } from './routes/visualization'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalysisRoute = AnalysisRouteImport.update({
+  id: '/analysis',
+  path: '/analysis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssessmentRoute = AssessmentRouteImport.update({
+  id: '/assessment',
+  path: '/assessment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesRoute = PropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheoryRoute = TheoryRouteImport.update({
+  id: '/theory',
+  path: '/theory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisualizationRoute = VisualizationRouteImport.update({
+  id: '/visualization',
+  path: '/visualization',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analysis': typeof AnalysisRoute
+  '/assessment': typeof AssessmentRoute
+  '/properties': typeof PropertiesRoute
+  '/report': typeof ReportRoute
+  '/theory': typeof TheoryRoute
+  '/visualization': typeof VisualizationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analysis': typeof AnalysisRoute
+  '/assessment': typeof AssessmentRoute
+  '/properties': typeof PropertiesRoute
+  '/report': typeof ReportRoute
+  '/theory': typeof TheoryRoute
+  '/visualization': typeof VisualizationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analysis': typeof AnalysisRoute
+  '/assessment': typeof AssessmentRoute
+  '/properties': typeof PropertiesRoute
+  '/report': typeof ReportRoute
+  '/theory': typeof TheoryRoute
+  '/visualization': typeof VisualizationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analysis'
+    | '/assessment'
+    | '/properties'
+    | '/report'
+    | '/theory'
+    | '/visualization'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analysis'
+    | '/assessment'
+    | '/properties'
+    | '/report'
+    | '/theory'
+    | '/visualization'
+  id:
+    | '__root__'
+    | '/'
+    | '/analysis'
+    | '/assessment'
+    | '/properties'
+    | '/report'
+    | '/theory'
+    | '/visualization'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalysisRoute: typeof AnalysisRoute
+  AssessmentRoute: typeof AssessmentRoute
+  PropertiesRoute: typeof PropertiesRoute
+  ReportRoute: typeof ReportRoute
+  TheoryRoute: typeof TheoryRoute
+  VisualizationRoute: typeof VisualizationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analysis': {
+      id: '/analysis'
+      path: '/analysis'
+      fullPath: '/analysis'
+      preLoaderRoute: typeof AnalysisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assessment': {
+      id: '/assessment'
+      path: '/assessment'
+      fullPath: '/assessment'
+      preLoaderRoute: typeof AssessmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties': {
+      id: '/properties'
+      path: '/properties'
+      fullPath: '/properties'
+      preLoaderRoute: typeof PropertiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/theory': {
+      id: '/theory'
+      path: '/theory'
+      fullPath: '/theory'
+      preLoaderRoute: typeof TheoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/visualization': {
+      id: '/visualization'
+      path: '/visualization'
+      fullPath: '/visualization'
+      preLoaderRoute: typeof VisualizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalysisRoute: AnalysisRoute,
+  AssessmentRoute: AssessmentRoute,
+  PropertiesRoute: PropertiesRoute,
+  ReportRoute: ReportRoute,
+  TheoryRoute: TheoryRoute,
+  VisualizationRoute: VisualizationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
