@@ -39,7 +39,7 @@ export function getRDKit(): Promise<any> {
 }
 
 export async function get3Dmol(): Promise<any> {
-  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.0/3Dmol-min.js");
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js");
   return (window as any).$3Dmol;
 }
 
