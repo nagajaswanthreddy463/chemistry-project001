@@ -8,7 +8,7 @@ import {
 import { Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader, Reveal } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis, Viewer3D } from "@/components/lab/Molecule";
-import { metricSections, type Descriptors } from "@/lib/chem";
+import { exampleFor, metricSections, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
 
 export const Route = createFileRoute("/properties")({
