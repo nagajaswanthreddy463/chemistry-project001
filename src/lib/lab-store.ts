@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 
 // Currently selected molecule shared across lab pages.
-let current = "CC(=O)Oc1ccccc1C(=O)O";
+let current = "CC(=O)Nc1ccc(O)cc1";
 const subs = new Set<() => void>();
 
 export function setSmiles(s: string) {

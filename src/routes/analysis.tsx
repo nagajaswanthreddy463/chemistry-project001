@@ -20,7 +20,7 @@ export const Route = createFileRoute("/analysis")({
 const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)"];
 
 function Analysis() {
-  const [list, setList] = useState(["Oc1ccccc1", "CC(=O)Oc1ccccc1C(=O)O", "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"]);
+  const [list, setList] = useState(["CC(=O)Nc1ccc(O)cc1", "CC(C)Cc1ccc(cc1)C(C)C(=O)O", "c1ccc2ccccc2c1"]);
   const [count, setCount] = useState(3);
   const [results, setResults] = useState<(Descriptors | string | null)[]>([null, null, null]);
 

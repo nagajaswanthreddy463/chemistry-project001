@@ -2,12 +2,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const EXAMPLES = [
-  { name: "Ethanol", smiles: "CCO" },
-  { name: "Benzene", smiles: "c1ccccc1" },
-  { name: "Phenol", smiles: "Oc1ccccc1" },
-  { name: "Acetic Acid", smiles: "CC(=O)O" },
-  { name: "Aspirin", smiles: "CC(=O)Oc1ccccc1C(=O)O" },
-  { name: "Caffeine", smiles: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C" },
+  { name: "Paracetamol", smiles: "CC(=O)Nc1ccc(O)cc1", type: "Drug" },
+  { name: "Ibuprofen", smiles: "CC(C)Cc1ccc(cc1)C(C)C(=O)O", type: "Drug" },
+  { name: "Nicotine", smiles: "CN1CCCC1c1cccnc1", type: "Natural alkaloid" },
+  { name: "Vanillin", smiles: "COc1cc(C=O)ccc1O", type: "Flavour compound" },
+  { name: "Naphthalene", smiles: "c1ccc2ccccc2c1", type: "Aromatic" },
+  { name: "Glucose", smiles: "OCC1OC(O)C(O)C(O)C1O", type: "Sugar" },
+  { name: "Dopamine", smiles: "NCCc1ccc(O)c(O)c1", type: "Neurotransmitter" },
+  { name: "Menthol", smiles: "CC(C)C1CCC(C)CC1O", type: "Natural terpene" },
+  { name: "Urea", smiles: "NC(N)=O", type: "Organic compound" },
+  { name: "Toluene", smiles: "Cc1ccccc1", type: "Aromatic" },
 ];
 
 const RDKIT_VER = "2024.3.5-1.0.0";

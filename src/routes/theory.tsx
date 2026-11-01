@@ -16,11 +16,11 @@ export const Route = createFileRoute("/theory")({
 
 function SmilesDiagram() {
   const parts = [
-    { t: "C", d: "carbon" }, { t: "C", d: "carbon" }, { t: "(=O)", d: "branch: C=O" }, { t: "O", d: "–OH" },
+    { t: "N", d: "–NH₂" }, { t: "C", d: "carbon" }, { t: "(N)", d: "branch: –NH₂" }, { t: "=O", d: "C=O" },
   ];
   return (
     <div className="mt-4 rounded-xl bg-background/40 p-4">
-      <p className="text-xs text-muted-foreground">Acetic acid → <span className="font-mono text-foreground">CC(=O)O</span></p>
+      <p className="text-xs text-muted-foreground">Urea → <span className="font-mono text-foreground">NC(N)=O</span></p>
       <div className="mt-3 flex flex-wrap gap-2">
         {parts.map((p, i) => (
           <div key={i} className="rounded-lg px-3 py-2 text-center ring-1 ring-primary/30">
@@ -49,7 +49,7 @@ const ITEMS = [
   },
   {
     id: "smiles", title: "SMILES notation",
-    body: <>SMILES (Simplified Molecular Input Line Entry System) writes a molecule as a line of text. Atoms are letters, <b>=</b> and <b>#</b> are double and triple bonds, parentheses mark branches, digits close rings, and lowercase letters mean aromatic atoms (e.g. <span className="font-mono">c1ccccc1</span> is benzene).<SmilesDiagram /></>,
+    body: <>SMILES (Simplified Molecular Input Line Entry System) writes a molecule as a line of text. Atoms are letters, <b>=</b> and <b>#</b> are double and triple bonds, parentheses mark branches, digits close rings, and lowercase letters mean aromatic atoms (e.g. <span className="font-mono">Cc1ccccc1</span> is toluene).<SmilesDiagram /></>,
   },
   {
     id: "desc", title: "Molecular descriptors",
@@ -58,7 +58,7 @@ const ITEMS = [
   },
   {
     id: "spr", title: "Structure–property relationships",
-    body: <>Small changes in structure shift properties predictably. Adding –OH to benzene (phenol) adds a donor and raises TPSA; adding an ester and acid (aspirin) increases weight and polarity. Lipinski's Rule of Five says an oral drug usually has MW ≤ 500, LogP ≤ 5, ≤ 5 donors and ≤ 10 acceptors.</>,
+    body: <>Small changes in structure shift properties predictably. Adding –OH and an amide group to toluene-like rings (paracetamol) adds donors and raises TPSA; the many –OH groups of glucose make it very polar, while the alkyl chain of ibuprofen raises LogP. Lipinski's Rule of Five says an oral drug usually has MW ≤ 500, LogP ≤ 5, ≤ 5 donors and ≤ 10 acceptors.</>,
   },
 ];
 
