@@ -64,7 +64,7 @@ export function Structure2D({ svg, className = "" }: { svg: string; className?: 
 export type Style3D = "stick" | "ballstick" | "sphere";
 
 export function Viewer3D({ smiles, molblock, style = "ballstick", surface = false, spin = true, className = "", svg, compact = false, interactive = true }:
-  { smiles: string; molblock: string; style?: Style3D; surface?: boolean; spin?: boolean; className?: string; svg?: string; compact?: boolean; interactive?: boolean }) {
+  { smiles: string; molblock: string; style?: Style3D; surface?: boolean; spin?: boolean; className?: string; svg?: string | undefined; compact?: boolean; interactive?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const viewer = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [note, setNote] = useState<string | null>(null);
