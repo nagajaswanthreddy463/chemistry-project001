@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Atom, Boxes, Calculator, GitCompare, GraduationCap, Sparkles } from "lucide-react";
 import { Logo, Reveal } from "@/components/lab/Layout";
-import { useAnalysis, Viewer3D } from "@/components/lab/Molecule";
+import { HeroMolecule } from "@/components/lab/HeroMolecule";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,7 +30,6 @@ const STATS = [
   { n: 100, s: "%", label: "Runs in your browser" },
 ];
 
-const CAFFEINE = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C";
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const [v, setV] = useState(0);
@@ -70,7 +69,6 @@ function Particles() {
 }
 
 function Home() {
-  const { data } = useAnalysis(CAFFEINE);
   return (
     <>
       <section className="relative">
