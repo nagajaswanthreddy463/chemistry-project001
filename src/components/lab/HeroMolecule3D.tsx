@@ -25,7 +25,7 @@ function Molecule() {
   return (
     <group ref={group} rotation={[0.35, 0, 0.1]}>
       {CAFFEINE_ATOMS.map((a, i) => (
-        <mesh key={i} position={pts[i]}>
+        <mesh key={i} position={pts[i]!}>
           <sphereGeometry args={[ATOM_STYLE[a.el].r, 32, 32]} />
           <meshStandardMaterial color={ATOM_STYLE[a.el].color} roughness={0.3} metalness={0.15} />
         </mesh>

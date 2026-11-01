@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/lab/Layout";
 import { ErrorNote, Skeleton, SmilesPicker, Structure2D, useAnalysis } from "@/components/lab/Molecule";
 import { EXAMPLES, metricList, type Descriptors } from "@/lib/chem";
 import { setSmiles, useSmiles } from "@/lib/lab-store";
-import logo from "@/assets/srm-logo.asset.json";
+const logo = { url: "/srm-logo.jpeg" };
 
 export const Route = createFileRoute("/report")({
   head: () => ({
