@@ -5,7 +5,7 @@ const HeroMolecule3D = lazy(() => import("./HeroMolecule3D"));
 
 export function StaticMolecule() {
   const s = 38, cx = 200, cy = 200;
-  const P = CAFFEINE_ATOMS.map((a) => ({ x: cx + a.x * s, y: cy - a.y * s, ...a }));
+  const P = CAFFEINE_ATOMS.map((a) => ({ ...a, x: cx + a.x * s, y: cy - a.y * s }));
   return (
     <svg viewBox="0 0 400 400" className="h-full w-full" role="img" aria-label="Caffeine molecule">
       {CAFFEINE_BONDS.map(([i, j], k) => <line key={k} x1={P[i]!.x} y1={P[i]!.y} x2={P[j]!.x} y2={P[j]!.y} stroke="#c9d3e6" strokeWidth={5} />)}
