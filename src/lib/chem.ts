@@ -14,7 +14,6 @@ export const EXAMPLES = [
   { name: "Toluene", smiles: "Cc1ccccc1", type: "Aromatic", pubchem: "toluene" },
 ];
 
-const RDKIT_VER = "2024.3.5-1.0.0";
 const scripts: Record<string, Promise<void>> = {};
 function loadScript(src: string) {
   if (!scripts[src]) {

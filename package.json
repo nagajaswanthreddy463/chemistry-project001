@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "cheminformatics-virtual-laboratory",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "copy-rdkit": "node -e \"const f=require('fs');f.mkdirSync('public/rdkit',{recursive:true});for(const n of ['RDKit_minimal.js','RDKit_minimal.wasm'])f.copyFileSync('node_modules/@rdkit/rdkit/dist/'+n,'public/rdkit/'+n)\"",
+    "postinstall": "npm run copy-rdkit"
   },
   "overrides": {
     "rolldown": "1.2.1"
