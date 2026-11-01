@@ -11,4 +11,4 @@
 
 - Chemistry (visualization page) runs fully in the browser: RDKit.js and 3Dmol (pinned 2.0.4; 2.4.0 rendered blank in testing) load from CDN in `src/lib/chem.ts`; 3D coordinates come from PubChem with a 2D fallback. Why: no backend required.
 - The selected molecule is shared across lab pages via `src/lib/lab-store.ts`. Why: users carry one molecule from visualization to report.
-- Home hero molecule is a hard-coded Three.js (R3F) model in `src/lib/caffeine.ts` with an SVG fallback. Why: must render with no network.
+- Home hero molecule is a hard-coded Three.js (R3F) model in `src/lib/paracetamol.ts` with an SVG fallback. Why: must render with no network.
