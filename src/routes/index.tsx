@@ -39,7 +39,7 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
+      if (!e?.isIntersecting) return;
       io.disconnect();
       const t0 = performance.now();
       const tick = (t: number) => {

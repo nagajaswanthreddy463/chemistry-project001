@@ -45,7 +45,7 @@ async function buildPdf(d: Descriptors, student: string, reg: string) {
 
   doc.setTextColor(20, 30, 60); doc.setFontSize(10);
   const name = EXAMPLES.find((e) => e.smiles === d.smiles)?.name;
-  const info = [["Student", student], ["Registration No.", reg], ["Date", new Date().toLocaleDateString()],
+  const info: [string, string][] = [["Student", student], ["Registration No.", reg], ["Date", new Date().toLocaleDateString()],
     ["Molecule", name ?? "Custom"], ["SMILES", d.smiles], ["Formula", d.formula]];
   info.forEach(([k, v], i) => { doc.setFont("helvetica", "bold"); doc.text(k, 14, 46 + i * 7); doc.setFont("helvetica", "normal"); doc.text(String(v), 50, 46 + i * 7, { maxWidth: 80 }); });
 
