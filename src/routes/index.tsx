@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Atom, Boxes, Calculator, GitCompare, GraduationCap, Sparkles } from "lucide-react";
 import { Logo, Reveal } from "@/components/lab/Layout";
-import { useAnalysis, Viewer3D } from "@/components/lab/Molecule";
+import { HeroMolecule } from "@/components/lab/HeroMolecule";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,7 +30,6 @@ const STATS = [
   { n: 100, s: "%", label: "Runs in your browser" },
 ];
 
-const CAFFEINE = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C";
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const [v, setV] = useState(0);
@@ -70,7 +69,6 @@ function Particles() {
 }
 
 function Home() {
-  const { data } = useAnalysis(CAFFEINE);
   return (
     <>
       <section className="relative">
@@ -96,12 +94,13 @@ function Home() {
               By <span className="text-foreground">Ustelamuri Naga Jaswanth Reddy</span> · B.Tech CSE (AI &amp; ML), Section C
             </p>
           </div>
-          <div className="relative aspect-square w-full">
-            <div className="absolute inset-[8%] rounded-full bg-glow/20 blur-3xl" />
-            <div className="absolute inset-0 rounded-full ring-1 ring-gold/20" />
-            <div className="absolute inset-[12%] rounded-full ring-1 ring-primary/20" />
-            {data && <Viewer3D smiles={CAFFEINE} molblock={data.molblock} style="ballstick" className="absolute inset-0" />}
-            <span className="absolute bottom-4 right-4 rounded-full glass px-3 py-1 font-mono text-xs">Caffeine · C₈H₁₀N₄O₂</span>
+          <div className="relative z-10 mx-auto h-[420px] w-full max-w-[560px] md:h-[560px]">
+            <div className="pointer-events-none absolute inset-[12%] rounded-full bg-glow/25 blur-3xl" />
+            <div className="pointer-events-none absolute inset-[22%] translate-x-6 rounded-full bg-gold/15 blur-3xl" />
+            <div className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-full max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full ring-1 ring-gold/20" />
+            <div className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-[76%] -translate-x-1/2 -translate-y-1/2 rounded-full ring-1 ring-primary/20" />
+            <HeroMolecule />
+            <span className="absolute bottom-4 right-4 z-20 rounded-full glass px-3 py-1 font-mono text-xs">Caffeine · C₈H₁₀N₄O₂</span>
           </div>
         </div>
       </section>

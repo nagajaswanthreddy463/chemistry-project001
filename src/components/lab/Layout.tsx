@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Menu, Moon, Sun, X, FlaskConical } from "lucide-react";
-import logo from "@/assets/srm-logo.asset.json";
+const logo = { url: "/srm-logo.jpeg" };
 
 const NAV = [
   { to: "/", label: "Home" },
