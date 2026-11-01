@@ -49,7 +49,7 @@ function Analysis() {
         </div>
         <div className={"grid gap-4 " + (count === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
           {list.slice(0, count).map((s, i) => {
-            const r = results[i];
+            const r = results[i] ?? null;
             return (
               <div key={i} className="glass rounded-3xl p-4" style={{ boxShadow: `inset 0 3px 0 ${COLORS[i]}` }}>
                 <select value={EXAMPLES.some((e) => e.smiles === s) ? s : ""} onChange={(e) => e.target.value && setList(list.map((x, j) => j === i ? e.target.value : x))}

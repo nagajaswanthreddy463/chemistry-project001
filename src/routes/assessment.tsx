@@ -20,7 +20,7 @@ function Assessment() {
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(QUESTIONS.map(() => null));
   const done = i >= QUESTIONS.length;
-  const q = QUESTIONS[i];
+  const q = QUESTIONS[Math.min(i, QUESTIONS.length - 1)]!;
   const picked = answers[i];
   const score = scoreQuiz(answers);
 

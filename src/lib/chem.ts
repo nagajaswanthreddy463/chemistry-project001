@@ -87,7 +87,7 @@ function formulaFromMolblock(mb: string) {
     if (el) c[el] = (c[el] ?? 0) + 1;
   }
   const order = ["C", "H", ...Object.keys(c).filter((k) => k !== "C" && k !== "H").sort()];
-  return order.filter((k) => c[k]).map((k) => k + (c[k] > 1 ? c[k] : "")).join("");
+  return order.filter((k) => c[k]).map((k) => k + ((c[k] ?? 0) > 1 ? c[k] : "")).join("");
 }
 
 export async function analyze(smiles: string, svgSize = 360): Promise<Descriptors> {
