@@ -100,7 +100,7 @@ function Home() {
             <div className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-full max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full ring-1 ring-gold/20" />
             <div className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-[76%] -translate-x-1/2 -translate-y-1/2 rounded-full ring-1 ring-primary/20" />
             <HeroMolecule />
-            <span className="absolute bottom-4 right-4 z-20 rounded-full glass px-3 py-1 font-mono text-xs">Caffeine · C₈H₁₀N₄O₂</span>
+            <span className="absolute bottom-2 left-1/2 z-20 -translate-x-1/2 rounded-full glass px-3 py-1 font-mono text-xs">Paracetamol (C₈H₉NO₂)</span>
           </div>
         </div>
       </section>
